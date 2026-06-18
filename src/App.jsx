@@ -6,8 +6,24 @@ import {
 } from "./services/divisaService";
 
 import "./styles.css";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import ConversionPage from "./conversionPage";
 
-function App() {
+const Home = () => {
+  const navigate = useNavigate();
+
+  return (
+    <button
+      type="button"
+      className="btn-primary"
+      onClick={() => navigate("/convert")}
+    >
+      Ir al conversor
+    </button>
+  );
+};
+
+function DivisasPage() {
   const [editing, setEditing] = useState(null);
   const [divisas, setDivisas] = useState([]);
   const [search, setSearch] = useState("");
@@ -115,6 +131,8 @@ function App() {
       <div className="header">
         <h1>💱 Divisas</h1>
 
+        <Home />
+
         <input
           className="search"
           placeholder="Buscar divisa..."
@@ -173,6 +191,15 @@ function App() {
         ))}
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<DivisasPage />} />
+      <Route path="/convert" element={<ConversionPage />} />
+    </Routes>
   );
 }
 

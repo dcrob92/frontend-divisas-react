@@ -45,17 +45,74 @@ body {
   border-radius: 8px;
 }
 
+.form select {
+  flex: 1;
+  min-width: 150px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: white;
+}
+
 .form button {
   padding: 10px 15px;
   background: #2ecc71;
   border: none;
   color: white;
   border-radius: 8px;
-  cursor: "pointer";
+  cursor: pointer;
+}
+
+.form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .form button.cancel {
   background: #95a5a6;
+}
+
+.btn-primary {
+  padding: 10px 15px;
+  background: #2ecc71;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.section-title {
+  margin: 0 0 15px;
+}
+
+.currency-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.currency-option input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.targets-section {
+  margin-bottom: 20px;
+}
+
+.results-section {
+  margin-top: 30px;
+}
+
+.results-section .success {
+  margin-bottom: 25px;
+}
+
+.results-grid {
+  margin-top: 10px;
 }
 
 /* GRID */

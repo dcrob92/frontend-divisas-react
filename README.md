@@ -82,6 +82,21 @@ frontend-divisas-react/
 │ └── styles.css
 
 
+## Patrones de diseño utilizados
+
+1. Patrón MVC (Model - View - Controller)
+2. Patrón Repository
+3. Patrón DTO (Data Transfer Object)
+4. Patrón Service Layer
+
+## Principios de diseño
+
+1. SRP - Single Responsibility Principle
+2. Separation of Concerns
+3. Encapsulación
+4. Inversión de Dependencias (Dependency Injection)
+5. Programación por Abstracción
+
 ## Instalación y ejecución
 
 ### Backend (Spring Boot)

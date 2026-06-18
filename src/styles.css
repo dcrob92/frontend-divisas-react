@@ -67,10 +67,11 @@ body {
 
 /* CARD */
 .card {
-  background: white;
+  background: rgb(243, 220, 220);
   padding: 15px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #f2f2f2;
+  box-shadow: 0 2px 8px rgb(70, 67, 67);
 }
 
 .actions {

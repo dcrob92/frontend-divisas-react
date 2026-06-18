@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { getDivisas, createDivisa, deleteDivisa } from "./services/divisaService";
+import "./styles.css";
 
 function App() {
   const [editing, setEditing] = useState(null);
   const [divisas, setDivisas] = useState([]);
+  const [search, setSearch] = useState("");
 
   const [form, setForm] = useState({
     name: "",
@@ -21,28 +23,33 @@ function App() {
     cargarDivisas();
   }, [cargarDivisas]);
 
+  const filteredDivisas = divisas.filter((d) =>
+    d.name.toLowerCase().includes(search.toLowerCase()) ||
+    d.code.toLowerCase().includes(search.toLowerCase())
+  );
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (editing) {
-    await fetch(`http://localhost:8080/api/currencies/${editing}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
-    });
+    if (editing) {
+      await fetch(`http://localhost:8080/api/currencies/${editing}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
 
-    setEditing(null);
-  } else {
-    await createDivisa(form);
-  }
+      setEditing(null);
+    } else {
+      await createDivisa(form);
+    }
 
-  setForm({ name: "", code: "", exchangeRate: "" });
-  cargarDivisas();
-};
+    setForm({ name: "", code: "", exchangeRate: "" });
+    cargarDivisas();
+  };
 
   const handleDelete = async (id) => {
     await deleteDivisa(id);
@@ -50,62 +57,49 @@ function App() {
   };
 
   const handleEdit = (divisa) => {
-  setForm(divisa);
-  setEditing(divisa.id);
-};
+    setForm(divisa);
+    setEditing(divisa.id);
+  };
 
-return (
-  <div style={styles.container}>
-    <h1 style={styles.title}>💱 Gestión de Divisas</h1>
+  const handleCancel = () => {
+    setEditing(null);
+    setForm({ name: "", code: "", exchangeRate: "" });
+  };
 
-    {/* FORM */}
-    <form onSubmit={handleSubmit} style={styles.form}>
+  return (
+  <div className="container">
+    <div className="header">
+      <h1>💱 Divisas</h1>
+
       <input
-        name="name"
-        placeholder="Nombre"
-        value={form.name}
-        onChange={handleChange}
-        style={styles.input}
+        className="search"
+        placeholder="Buscar divisa..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
       />
-      <input
-        name="code"
-        placeholder="Código"
-        value={form.code}
-        onChange={handleChange}
-        style={styles.input}
-      />
-      <input
-        name="exchangeRate"
-        placeholder="Valor"
-        value={form.exchangeRate}
-        onChange={handleChange}
-        style={styles.input}
-      />
-      <button type="submit" style={styles.button}>
-        Crear
-      </button>
+    </div>
+
+    <form className="form" onSubmit={handleSubmit}>
+      <input name="name" placeholder="Nombre" value={form.name} onChange={handleChange} />
+      <input name="code" placeholder="Código" value={form.code} onChange={handleChange} />
+      <input name="exchangeRate" placeholder="Valor" value={form.exchangeRate} onChange={handleChange} />
+
+      <button>{editing ? "Actualizar" : "Crear"}</button>
     </form>
 
-    {/* LISTA */}
-    <div style={styles.grid}>
-      {divisas.map((d) => (
-        <div key={d.id} style={styles.card}>
+    <div className="grid">
+      {filteredDivisas.map((d) => (
+        <div key={d.id} className="card">
           <h3>{d.name}</h3>
-          <p><b>Código:</b> {d.code}</p>
-          <p><b>Valor:</b> {d.exchangeRate}</p>
+          <p>{d.code}</p>
+          <p>{d.exchangeRate}</p>
 
-          <div style={styles.actions}>
-            <button
-              onClick={() => handleEdit(d)}
-              style={styles.editBtn}
-            >
+          <div className="actions">
+            <button className="edit" onClick={() => handleEdit(d)}>
               Editar
             </button>
 
-            <button
-              onClick={() => handleDelete(d.id)}
-              style={styles.deleteBtn}
-            >
+            <button className="delete" onClick={() => handleDelete(d.id)}>
               Eliminar
             </button>
           </div>
@@ -117,58 +111,86 @@ return (
 }
 
 const styles = {
-  container: {
-    padding: "20px",
+  page: {
     fontFamily: "Arial",
-    background: "#f4f6f8",
-    minHeight: "100vh"
+    background: "#f5f7fb",
+    minHeight: "100vh",
+    padding: "30px"
   },
-  title: {
-    textAlign: "center"
+
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px"
   },
+
+  search: {
+    padding: "10px",
+    width: "250px",
+    borderRadius: "8px",
+    border: "1px solid #ccc"
+  },
+
   form: {
     display: "flex",
     gap: "10px",
-    justifyContent: "center",
     marginBottom: "20px"
   },
+
   input: {
-    padding: "8px"
+    padding: "10px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    flex: 1
   },
+
   button: {
-    padding: "8px 12px",
+    padding: "10px 15px",
     background: "#2ecc71",
     color: "white",
     border: "none",
+    borderRadius: "8px",
     cursor: "pointer"
   },
+
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
     gap: "15px"
   },
+
   card: {
     background: "white",
     padding: "15px",
-    borderRadius: "8px",
-    boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
+    borderRadius: "10px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
   },
+
   actions: {
     display: "flex",
     justifyContent: "space-between",
     marginTop: "10px"
   },
-  editBtn: {
+
+  edit: {
     background: "#3498db",
     color: "white",
     border: "none",
-    padding: "5px"
+    padding: "6px 10px",
+    borderRadius: "6px",
+    cursor: "pointer"
   },
-  deleteBtn: {
+
+  delete: {
     background: "#e74c3c",
     color: "white",
     border: "none",
-    padding: "5px"
+    padding: "6px 10px",
+    borderRadius: "6px",
+    cursor: "pointer"
   }
+
 };
+
 export default App;
